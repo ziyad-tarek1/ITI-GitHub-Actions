@@ -1,0 +1,19 @@
+name: Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: echo
+        run: echo "Hello, World!"
+
+      - name: list files
+        run: ls -la
+
+      - name: read file
+        run: cat README.md
