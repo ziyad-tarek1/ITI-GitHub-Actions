@@ -9,6 +9,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      # - name: clone github repo
+      #   run: |
+      #    git clone https://github.com/github/my-repo.git
+      #    cd my-repo
+      - name: checkout steps
+        uses: actions/checkout@v7
+
       - name: echo
         run: echo "Hello, World!"
 
@@ -17,3 +24,7 @@ jobs:
 
       - name: read file
         run: cat README.md
+
+      - name: install python
+        # run: sudo apt-get update && sudo apt-get install -y python3 python3-pip
+        uses: actions/setup-python@v4  # reuseable workflow 
