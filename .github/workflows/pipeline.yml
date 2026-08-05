@@ -13,6 +13,7 @@ on:
       - README.md
       - .github/**
       - .gitignore
+      - Trigger.md
 
     branches:
       - main
@@ -31,7 +32,19 @@ jobs:
       - name: echo
         run: echo "Hello, World!" >> output.txt
 
-      - name: list files
+
+      - name: list files after echo
+        run: ls -la
+
+
+      # use upload artifact action to upload output.txt
+      - uses: actions/upload-artifact@v7
+        with:
+          name: first-artifact
+          path: output.txt
+
+
+      - name: list files after upload artifact
         run: ls -la
 
       - name: read file
@@ -48,5 +61,8 @@ jobs:
     steps:
       - name: deploy
         run: echo "Deploying..."
+
+      # use download artifact action to download output.txt
+
       - name: read output
         run: cat output.txt
