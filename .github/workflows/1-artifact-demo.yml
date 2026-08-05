@@ -1,0 +1,37 @@
+name: 1 - Artifact upload/download demo
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  upload-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create a sample file
+        run: |
+          echo "Hello from upload-job" > greeting.txt
+          date >> greeting.txt
+          ls -la
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: greeting-artifact
+          path: greeting.txt
+
+  download-job:
+    needs: upload-job
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: greeting-artifact
+
+      - name: Print downloaded file
+        run: |
+          ls -la
+          cat greeting.txt

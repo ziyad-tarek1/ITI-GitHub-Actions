@@ -1,0 +1,14 @@
+name: 3 - Scheduled hello world
+
+on:
+  schedule:
+    # Every day at 09:00 UTC
+    - cron: "0 9 * * *"
+  workflow_dispatch:
+
+jobs:
+  hello:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print hello world
+        run: echo "Hello, World!"
