@@ -9,6 +9,7 @@ on:
   # push trigger
   push:
     # on main branch
+    # best practice to ignore files that are not related to the pipeline
     paths-ignore:
       - README.md
       - .github/**
@@ -34,13 +35,13 @@ jobs:
 
 
       - name: list files after echo
-        run: ls -la
+        run: ls -la # expected to see output.txt
 
 
       # use upload artifact action to upload output.txt
       - uses: actions/upload-artifact@v7
         with:
-          name: first-artifact
+          name: first-artifact  # METADATA name of the artifact 
           path: output.txt
 
 
@@ -63,6 +64,11 @@ jobs:
         run: echo "Deploying..."
 
       # use download artifact action to download output.txt
+
+      - name: download artifact
+        uses: actions/download-artifact@v7
+        with:
+          name: first-artifact
 
       - name: read output
         run: cat output.txt
