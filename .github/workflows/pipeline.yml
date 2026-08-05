@@ -1,13 +1,25 @@
 name: Pipeline
 
 on:
+  # manual trigger
+  workflow_dispatch:
+  # scheduled trigger
+  schedule:
+    - cron: '0 0 * * *'
+  # push trigger
   push:
+    # on main branch
+    paths-ignore:
+      - README.md
+      - .github/**
+      - .gitignore
+
     branches:
       - main
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest # github hosted runner VM ubuntu
     steps:
       # - name: clone github repo
       #   run: |
@@ -17,7 +29,7 @@ jobs:
         uses: actions/checkout@v7
 
       - name: echo
-        run: echo "Hello, World!"
+        run: echo "Hello, World!" >> output.txt
 
       - name: list files
         run: ls -la
@@ -25,6 +37,16 @@ jobs:
       - name: read file
         run: cat README.md
 
-      - name: install python
-        # run: sudo apt-get update && sudo apt-get install -y python3 python3-pip
-        uses: actions/setup-python@v4  # reuseable workflow 
+      # - name: install python
+      #   # run: sudo apt-get update && sudo apt-get install -y python3 python3-pip
+      #   uses: actions/setup-python@v4  # reuseable workflow 
+
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: deploy
+        run: echo "Deploying..."
+      - name: read output
+        run: cat output.txt

@@ -2,6 +2,12 @@ name: 1 - Artifact upload/download demo
 
 on:
   push:
+    # on main branch
+    paths-ignore:
+      - README.md
+      - .github/**
+      - .gitignore
+
     branches:
       - main
   workflow_dispatch:
