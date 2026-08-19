@@ -23,7 +23,8 @@ on:
 # Environment variables Workflow Level
 env:
   # ITI_CLAM_VERSION: "49"
-  KEY: WORKFLOW
+  KEY: WORKFLOW # plain text value
+  ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
   WORKFLOW_ENV: "I am workflow env"
 
 jobs:
@@ -37,6 +38,11 @@ jobs:
           echo "REPO ENVIRONMENT VARIABLE VALUE IS: KEY = ${{ vars.KEY }}"
           echo "(Set KEY=REPO in repo Actions variables to see REPO here)"
 
+      - name: Repo level (secrets.ADMIN_PASSWORD)
+        run: |
+          echo "Level: REPO"
+          echo "REPO SECRET VALUE IS: ADMIN_PASSWORD = ${{ secrets.ADMIN_PASSWORD }}"
+
   print-workflow-level:
     runs-on: ubuntu-latest
     # No job KEY → inherits workflow KEY=WORKFLOW
@@ -48,7 +54,7 @@ jobs:
 
   print-job-level:
     # needs: print-workflow-level
-    if: success()
+    # if: success()
     runs-on: ubuntu-latest
     # Job KEY overrides workflow KEY
     env:
@@ -65,6 +71,16 @@ jobs:
         run: |
           echo "Level: STEP (bonus — wins over job/workflow)"
           echo "STEP ENVIRONMENT VARIABLE VALUE IS: $KEY = ${{ env.KEY }}"
+
+
+repo level <-- workflow level <-- job level <-- step level
+
+workflow level
+
+job level
+
+step level
+
 
   # # ---- Named envs at each scope (no override) ----
   # show-named-envs:
