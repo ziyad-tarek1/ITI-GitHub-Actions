@@ -22,7 +22,7 @@ on:
 
 # Environment variables Workflow Level
 env:
-  ITI_CLAM_VERSION: "49"
+  # ITI_CLAM_VERSION: "49"
   KEY: WORKFLOW
   WORKFLOW_ENV: "I am workflow env"
 
@@ -34,7 +34,7 @@ jobs:
       - name: Repo level (vars.KEY)
         run: |
           echo "Level: REPO"
-          echo "vars.KEY=${{ vars.KEY }}"
+          echo "REPO ENVIRONMENT VARIABLE VALUE IS: KEY = ${{ vars.KEY }}"
           echo "(Set KEY=REPO in repo Actions variables to see REPO here)"
 
   print-workflow-level:
@@ -47,7 +47,7 @@ jobs:
           echo "WORKFLOW  ENVIRONMENT VARIABLE VALUE IS: $KEY =  ${{ env.KEY }}"
 
   print-job-level:
-    needs: print-workflow-level
+    # needs: print-workflow-level
     if: success()
     runs-on: ubuntu-latest
     # Job KEY overrides workflow KEY
@@ -57,26 +57,26 @@ jobs:
       - name: Job level ($KEY)
         run: |
           echo "Level: JOB"
-          echo "JOB ENVIRONMENT VARIABLE VALUE IS: $KEY"
+          echo "JOB ENVIRONMENT VARIABLE VALUE IS: $KEY = ${{ env.KEY }}"
 
       - name: Step level ($KEY) — highest priority
         env:
           KEY: STEP
         run: |
           echo "Level: STEP (bonus — wins over job/workflow)"
-          echo "STEP ENVIRONMENT VARIABLE VALUE IS: $KEY"
+          echo "STEP ENVIRONMENT VARIABLE VALUE IS: $KEY = ${{ env.KEY }}"
 
-  # ---- Named envs at each scope (no override) ----
-  show-named-envs:
-    runs-on: ubuntu-latest
-    env:
-      JOB_ENV: "I am job env"
-    steps:
-      - name: Print named envs
-        env:
-          STEP_ENV: "I am step env"
-        run: |
-          echo "vars.KEY (repo)=${{ vars.KEY }}"
-          echo "WORKFLOW_ENV=$WORKFLOW_ENV"
-          echo "JOB_ENV=$JOB_ENV"
-          echo "STEP_ENV=$STEP_ENV"
+  # # ---- Named envs at each scope (no override) ----
+  # show-named-envs:
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     JOB_ENV: "I am job env"
+  #   steps:
+  #     - name: Print named envs
+  #       env:
+  #         STEP_ENV: "I am step env"
+  #       run: |
+  #         echo "vars.KEY (repo)=${{ vars.KEY }}"
+  #         echo "WORKFLOW_ENV=$WORKFLOW_ENV"
+  #         echo "JOB_ENV=$JOB_ENV"
+  #         echo "STEP_ENV=$STEP_ENV"
