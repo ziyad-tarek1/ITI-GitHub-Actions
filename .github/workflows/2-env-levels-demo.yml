@@ -24,7 +24,7 @@ on:
 env:
   # ITI_CLAM_VERSION: "49"
   KEY: WORKFLOW # plain text value
-  ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+  ADMIN_PASSWORD_VALUE: ${{ secrets.ADMIN_PASSWORD }}
   WORKFLOW_ENV: "I am workflow env"
 
 jobs:
@@ -42,35 +42,36 @@ jobs:
         run: |
           echo "Level: REPO"
           echo "REPO SECRET VALUE IS: ADMIN_PASSWORD = ${{ secrets.ADMIN_PASSWORD }}"
+          echo "ADMIN_PASSWORD = $ADMIN_PASSWORD_VALUE"
 
-  print-workflow-level:
-    runs-on: ubuntu-latest
-    # No job KEY → inherits workflow KEY=WORKFLOW
-    steps:
-      - name: Workflow level ($KEY)
-        run: |
-          echo "Level: WORKFLOW"
-          echo "WORKFLOW  ENVIRONMENT VARIABLE VALUE IS: $KEY =  ${{ env.KEY }}"
+  # print-workflow-level:
+  #   runs-on: ubuntu-latest
+  #   # No job KEY → inherits workflow KEY=WORKFLOW
+  #   steps:
+  #     - name: Workflow level ($KEY)
+  #       run: |
+  #         echo "Level: WORKFLOW"
+  #         echo "WORKFLOW  ENVIRONMENT VARIABLE VALUE IS: $KEY =  ${{ env.KEY }}"
 
-  print-job-level:
-    # needs: print-workflow-level
-    # if: success()
-    runs-on: ubuntu-latest
-    # Job KEY overrides workflow KEY
-    env:
-      KEY: JOB
-    steps:
-      - name: Job level ($KEY)
-        run: |
-          echo "Level: JOB"
-          echo "JOB ENVIRONMENT VARIABLE VALUE IS: $KEY = ${{ env.KEY }}"
+  # print-job-level:
+  #   # needs: print-workflow-level
+  #   # if: success()
+  #   runs-on: ubuntu-latest
+  #   # Job KEY overrides workflow KEY
+  #   env:
+  #     KEY: JOB
+  #   steps:
+  #     - name: Job level ($KEY)
+  #       run: |
+  #         echo "Level: JOB"
+  #         echo "JOB ENVIRONMENT VARIABLE VALUE IS: $KEY = ${{ env.KEY }}"
 
-      - name: Step level ($KEY) — highest priority
-        env:
-          KEY: STEP
-        run: |
-          echo "Level: STEP (bonus — wins over job/workflow)"
-          echo "STEP ENVIRONMENT VARIABLE VALUE IS: $KEY = ${{ env.KEY }}"
+  #     - name: Step level ($KEY) — highest priority
+  #       env:
+  #         KEY: STEP
+  #       run: |
+  #         echo "Level: STEP (bonus — wins over job/workflow)"
+  #         echo "STEP ENVIRONMENT VARIABLE VALUE IS: $KEY = ${{ env.KEY }}"
 
 
 # repo level --> workflow level --> job level --> step level
