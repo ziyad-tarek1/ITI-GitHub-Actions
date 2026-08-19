@@ -73,13 +73,7 @@ jobs:
           echo "STEP ENVIRONMENT VARIABLE VALUE IS: $KEY = ${{ env.KEY }}"
 
 
-repo level <-- workflow level <-- job level <-- step level
-
-workflow level
-
-job level
-
-step level
+# repo level --> workflow level --> job level --> step level
 
 
   # # ---- Named envs at each scope (no override) ----
