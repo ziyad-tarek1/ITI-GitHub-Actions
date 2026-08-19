@@ -5,19 +5,13 @@ name: 2 - Env levels demo
 #
 # Priority (same name KEY): step > job > workflow
 # Repo vars are separate (vars.KEY) — they do not auto-become $KEY
-#
-# Two ways to read env in a step:
-#   $KEY            → shell env var (runtime, inside run:)
-#   ${{ env.KEY }}  → Actions "env" context (expression, evaluated by GHA)
-# Use ${{ env.KEY }} when you need the value outside shell (if:, with:, name:, etc.)
-# Use $KEY inside run: scripts (simpler). Both work in run: for workflow/job/step env.
 
 on:
   push:
     # on main branch
     paths-ignore:
       - README.md
-      # - .github/**
+      - .github/**
       - .gitignore
 
     branches:
@@ -25,7 +19,10 @@ on:
   workflow_dispatch:
 
 # Workflow-level: KEY=WORKFLOW
+
+# Environment variables Workflow Level
 env:
+  ITI_CLAM_VERSION: "49"
   KEY: WORKFLOW
   WORKFLOW_ENV: "I am workflow env"
 
@@ -39,37 +36,35 @@ jobs:
           echo "Level: REPO"
           echo "vars.KEY=${{ vars.KEY }}"
           echo "(Set KEY=REPO in repo Actions variables to see REPO here)"
-          echo "(vars.KEY is NOT in env — ${{ env.KEY }} would be WORKFLOW here, not REPO)"
 
   print-workflow-level:
     runs-on: ubuntu-latest
     # No job KEY → inherits workflow KEY=WORKFLOW
     steps:
-      - name: Workflow level ($KEY and ${{ env.KEY }})
+      - name: Workflow level ($KEY)
         run: |
           echo "Level: WORKFLOW"
-          echo "shell \$KEY=$KEY"
-          echo "expression env.KEY=${{ env.KEY }}"
+          echo "WORKFLOW  ENVIRONMENT VARIABLE VALUE IS: $KEY =  ${{ env.KEY }}"
 
   print-job-level:
+    needs: print-workflow-level
+    if: success()
     runs-on: ubuntu-latest
     # Job KEY overrides workflow KEY
     env:
       KEY: JOB
     steps:
-      - name: Job level ($KEY and ${{ env.KEY }})
+      - name: Job level ($KEY)
         run: |
           echo "Level: JOB"
-          echo "shell \$KEY=$KEY"
-          echo "expression env.KEY=${{ env.KEY }}"
+          echo "JOB ENVIRONMENT VARIABLE VALUE IS: $KEY"
 
-      - name: Step level ($KEY and ${{ env.KEY }}) — highest priority
+      - name: Step level ($KEY) — highest priority
         env:
           KEY: STEP
         run: |
           echo "Level: STEP (bonus — wins over job/workflow)"
-          echo "shell \$KEY=$KEY"
-          echo "expression env.KEY=${{ env.KEY }}"
+          echo "STEP ENVIRONMENT VARIABLE VALUE IS: $KEY"
 
   # ---- Named envs at each scope (no override) ----
   show-named-envs:
@@ -82,7 +77,6 @@ jobs:
           STEP_ENV: "I am step env"
         run: |
           echo "vars.KEY (repo)=${{ vars.KEY }}"
-          echo "WORKFLOW_ENV=$WORKFLOW_ENV / ${{ env.WORKFLOW_ENV }}"
-          echo "JOB_ENV=$JOB_ENV / ${{ env.JOB_ENV }}"
-          echo "STEP_ENV=$STEP_ENV / ${{ env.STEP_ENV }}"
-          echo "KEY via env context=${{ env.KEY }}"
+          echo "WORKFLOW_ENV=$WORKFLOW_ENV"
+          echo "JOB_ENV=$JOB_ENV"
+          echo "STEP_ENV=$STEP_ENV"
